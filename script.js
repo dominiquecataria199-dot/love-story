@@ -1,59 +1,61 @@
 // --- CONFIGURATION SUPABASE ---
-const SUPABASE_URL = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGJmanJhbXl5dnBxdmJlamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNTIzNTcsImV4cCI6MjA4NjYyODM1N30.yM_g4rlfpQy_CmbPlH3QtJLltY70i45Rjy1BbQdB9rY'; // ⚠️ REMPLACE ICI
-const SUPABASE_KEY = 'TA-CLE-ANON'; // ⚠️ REMPLACE ICI
+// ⚠️ REMPLACE CES DEUX LIGNES PAR TES VRAIES INFOS ⚠️
+const SUPABASE_URL = 'https://yidbfjramyyvpqvbejdu.supabase.co'; 
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGJmanJhbXl5dnBxdmJlamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNTIzNTcsImV4cCI6MjA4NjYyODM1N30.yM_g4rlfpQy_CmbPlH3QtJLltY70i45Rjy1BbQdB9rY'; // Ta clé complète ici
 
+// Initialisation sécurisée
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// --- BANQUES DE DONNÉES FUN ---
+// --- VARIABLES GLOBALES (Déclarées tout en haut) ---
+let questionCount = 0;
+let quizData = null;
+let currentQIndex = 0;
+let localScore = 0;
+
 const randomImages = [
     "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif",
     "https://media.giphy.com/media/l0HlPTbGpWEwjVxrW/giphy.gif",
     "https://media.giphy.com/media/3o7TKoWXm3okO1kgHC/giphy.gif",
     "https://media.giphy.com/media/xT0xezQGU5xBeaKp56/giphy.gif"
 ];
-const goodVibes = ["Génie ! 😍", "Tu me connais trop bien ! 🔥", "Exact ! 💖"];
-const badVibes = ["N'importe quoi 😭", "Tu dors dehors ce soir 🛋️", "Sérieux ?! 😱"];
 
-// --- VARIABLES GLOBALES ---
-let quizData = null;
-let currentQIndex = 0;
-let localScore = 0;
-let questionCount = 0;
+const goodVibes = ["T'es un(e) génie ! 😍", "L'amour rend intelligent ! 🧠", "Toi tu me connais ! 🔥"];
+const badVibes = ["Tu sors d'où ? 😭", "Tu dors sur le balcon 🛋️", "Tu m'écoutes jamais ! 🙉"];
 
 // ==========================================
 // 1. PARTIE CRÉATION (index.html)
 // ==========================================
 
 function addQuestionField() {
-    questionCount++;
+    questionCount++; // On incrémente
     const container = document.getElementById('questions-container');
-    
+    if(!container) return;
+
     const html = `
-    <div class="question-block" id="block-${questionCount}">
-        <div class="q-header">
-            <h3>Question ${questionCount}</h3>
-            ${questionCount > 1 ? `<button class="btn-delete" onclick="this.parentElement.parentElement.remove()">Supprimer 🗑️</button>` : ''}
+    <div class="question-block" id="block-${questionCount}" style="animation: fadeIn 0.5s ease;">
+        <div class="q-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="margin:0; color:#ff4b69;">Question ${questionCount}</h3>
+            ${questionCount > 1 ? `<button type="button" onclick="document.getElementById('block-${questionCount}').remove()" style="width:auto; background:#ccc; padding:5px 10px; font-size:0.7rem; margin:0;">Supprimer 🗑️</button>` : ''}
         </div>
         
-        <div class="input-group">
-            <input type="text" class="q-input" placeholder="La question ?" required>
-            <div style="position:relative;">
-                <input type="text" class="img-input" id="img-${questionCount}" placeholder="Lien image/GIF (Optionnel)">
-                <button class="random-btn" onclick="setRandomImage('img-${questionCount}')">🎲</button>
-            </div>
-            
-            <input type="text" class="good-input" placeholder="✅ La BONNE réponse" style="border-left: 5px solid #2ecc71;">
-            <input type="text" class="bad1-input" placeholder="❌ Mauvaise réponse 1" style="border-left: 5px solid #ff4b69;">
-            <input type="text" class="bad2-input" placeholder="❌ Mauvaise réponse 2" style="border-left: 5px solid #ff4b69;">
+        <input type="text" class="q-input" placeholder="Ta question (ex: Quel est mon dessert favori ?)" required>
+        
+        <div style="position:relative; display:flex; gap:5px;">
+            <input type="text" class="img-input" id="img-${questionCount}" placeholder="Lien image ou GIF (Optionnel)">
+            <button type="button" onclick="setRandomImage('img-${questionCount}')" style="width:auto; margin:8px 0; padding:0 15px;">🎲</button>
         </div>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ff4b69;">
+        
+        <input type="text" class="good-input" placeholder="✅ La BONNE réponse" style="border-left: 5px solid #2ecc71;">
+        <input type="text" class="bad1-input" placeholder="❌ Mauvaise réponse 1">
+        <input type="text" class="bad2-input" placeholder="❌ Mauvaise réponse 2">
     </div>
     `;
     container.insertAdjacentHTML('beforeend', html);
 }
 
 function setRandomImage(id) {
-    document.getElementById(id).value = randomImages[Math.floor(Math.random() * randomImages.length)];
+    const randomImg = randomImages[Math.floor(Math.random() * randomImages.length)];
+    document.getElementById(id).value = randomImg;
 }
 
 async function createQuiz() {
@@ -61,7 +63,6 @@ async function createQuiz() {
     const partner = document.getElementById('partner').value;
     const reward = document.getElementById('reward').value;
 
-    // Récupérer toutes les questions dynamiques
     const qBlocks = document.querySelectorAll('.question-block');
     let questions = [];
     let isValid = true;
@@ -84,39 +85,41 @@ async function createQuiz() {
         questions.push({ question: q, image: img, options: options });
     });
 
-    if (!creator || !partner || !isValid) return alert("Remplis tout !");
+    if (!creator || !partner || !isValid) return alert("Hé ! Remplis tout le formulaire stp ❤️");
 
     const btn = document.querySelector('.btn-create');
-    btn.innerText = "Création...";
+    btn.innerText = "Création du lien... ⏳";
     btn.disabled = true;
 
-    const { data, error } = await db.from('fun_quizzes').insert([{ 
-        creator_name: creator, 
-        partner_name: partner, 
-        questions: questions, 
-        final_message: reward 
-    }]).select();
+    try {
+        const { data, error } = await db.from('fun_quizzes').insert([{ 
+            creator_name: creator, 
+            partner_name: partner, 
+            questions: questions, 
+            final_message: reward 
+        }]).select();
 
-    if (error) {
-        alert("Erreur: " + error.message);
-        btn.disabled = false;
-    } else {
+        if (error) throw error;
+
         const quizId = data[0].id;
-        const playLink = `${window.location.origin}/play.html?id=${quizId}`;
-        const adminLink = `${window.location.origin}/dashboard.html?id=${quizId}`; // Lien secret
+        const playLink = `${window.location.origin}${window.location.pathname.replace('index.html', '')}play.html?id=${quizId}`;
+        const adminLink = `${window.location.origin}${window.location.pathname.replace('index.html', '')}dashboard.html?id=${quizId}`;
 
         document.getElementById('creation-form').classList.add('hidden');
         document.getElementById('result-area').classList.remove('hidden');
         
         document.getElementById('play-link-input').value = playLink;
         document.getElementById('admin-link-input').value = adminLink;
+    } catch (err) {
+        alert("Erreur Supabase: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "GÉNÉRER LE QUIZ 🚀";
     }
 }
 
 // ==========================================
 // 2. PARTIE JEU (play.html)
 // ==========================================
-
 async function initGame() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
@@ -124,27 +127,21 @@ async function initGame() {
 
     const { data, error } = await db.from('fun_quizzes').select('*').eq('id', id).single();
 
-    if (error || !data) return document.body.innerHTML = "<h1>Quiz introuvable 😢</h1>";
-
-    quizData = data;
-
-    // VÉRIFICATION : Est-ce que le jeu est fini ?
-    if (quizData.is_completed && !quizData.retry_allowed) {
-        // Jeu bloqué
-        document.body.innerHTML = `
-            <div class="container" style="text-align:center;">
-                <h1>⛔ STOP !</h1>
-                <p>Tu as déjà joué. Ton score est enregistré : <b>${quizData.player_score}/${quizData.questions.length}</b></p>
-                <p>Demande à ${quizData.creator_name} de débloquer une nouvelle chance !</p>
-                <img src="https://media.giphy.com/media/3o7TKr3nzbh5WgCFxe/giphy.gif" style="width:100%; border-radius:10px;">
-            </div>
-        `;
+    if (error || !data) {
+        document.body.innerHTML = "<div class='container'><h1>Quiz introuvable 😢</h1></div>";
         return;
     }
 
-    // Si on a le droit de rejouer, on reset
-    if (quizData.retry_allowed) {
-        // On pourrait reset en base ici, mais on le fera à la fin
+    quizData = data;
+
+    if (quizData.is_completed && !quizData.retry_allowed) {
+        document.body.innerHTML = `
+            <div class="container">
+                <h1>⛔ STOP !</h1>
+                <p>Tu as déjà joué. Score : <b>${quizData.player_score}/${quizData.questions.length}</b></p>
+                <p>Demande à ${quizData.creator_name} de te donner une autre chance.</p>
+            </div>`;
+        return;
     }
 
     document.getElementById('p-name').innerText = quizData.partner_name;
@@ -186,7 +183,7 @@ function handleAnswer(isCorrect) {
         localScore++;
         feedbackText.innerText = goodVibes[Math.floor(Math.random() * goodVibes.length)];
         feedbackText.style.color = "#2ecc71";
-        if(typeof confetti !== 'undefined') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
     } else {
         feedbackText.innerText = badVibes[Math.floor(Math.random() * badVibes.length)];
         feedbackText.style.color = "#ff4b69";
@@ -196,55 +193,32 @@ function handleAnswer(isCorrect) {
 
     setTimeout(() => {
         feedback.classList.add('hidden');
-        nextQuestion();
+        currentQIndex++;
+        if (currentQIndex < quizData.questions.length) displayQuestion();
+        else endGame();
     }, 2000);
-}
-
-function nextQuestion() {
-    currentQIndex++;
-    if (currentQIndex < quizData.questions.length) {
-        displayQuestion();
-    } else {
-        endGame();
-    }
 }
 
 async function endGame() {
     document.getElementById('game-play').classList.add('hidden');
     document.getElementById('game-end').classList.remove('hidden');
+    document.getElementById('score-title').innerText = `Score : ${localScore} / ${quizData.questions.length}`;
+    document.getElementById('final-msg').innerText = quizData.final_message;
 
-    const finalMsg = document.getElementById('final-msg');
-    const scoreTitle = document.getElementById('score-title');
-
-    scoreTitle.innerText = `Score : ${localScore} / ${quizData.questions.length}`;
-
-    if (localScore === quizData.questions.length) {
-        finalMsg.innerHTML = `<p>${quizData.final_message}</p>`;
-        if(typeof confetti !== 'undefined') confetti({ particleCount: 200, spread: 100 });
-    } else {
-        finalMsg.innerHTML = `<p>Aïe... C'est pas ouf. Attends de voir si ${quizData.creator_name} te laisse recommencer.</p>`;
-    }
-
-    // SAUVEGARDE EN BASE (Bloque le jeu)
-    await db.from('fun_quizzes')
-        .update({ 
-            player_score: localScore, 
-            is_completed: true, 
-            retry_allowed: false 
-        })
-        .eq('id', quizData.id);
+    await db.from('fun_quizzes').update({ 
+        player_score: localScore, 
+        is_completed: true, 
+        retry_allowed: false 
+    }).eq('id', quizData.id);
 }
 
 // ==========================================
 // 3. PARTIE DASHBOARD (dashboard.html)
 // ==========================================
-
 async function initDashboard() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if (!id) return;
-
-    // Rafraîchir les données toutes les 5 secondes pour voir si l'autre a joué
     loadDashboardData(id);
     setInterval(() => loadDashboardData(id), 5000); 
 }
@@ -252,41 +226,28 @@ async function initDashboard() {
 async function loadDashboardData(id) {
     const { data, error } = await db.from('fun_quizzes').select('*').eq('id', id).single();
     if(error) return;
-
     const statusDiv = document.getElementById('status-area');
-    
     if(!data.is_completed) {
-        statusDiv.innerHTML = `
-            <div class="waiting-box">
-                <h3>⏳ En attente...</h3>
-                <p>${data.partner_name} n'a pas encore fini le quiz.</p>
-            </div>`;
+        statusDiv.innerHTML = `<div class="waiting">⏳ En attente de ${data.partner_name}...</div>`;
     } else {
         statusDiv.innerHTML = `
-            <div class="result-box">
-                <h1>Score : ${data.player_score} / ${data.questions.length}</h1>
-                <p>${data.partner_name} a terminé.</p>
-                <hr>
-                <p>Est-ce que tu lui accordes une autre chance ?</p>
+            <div class="result">
+                <h2>Score : ${data.player_score} / ${data.questions.length}</h2>
                 <button class="btn" onclick="allowRetry('${id}')" ${data.retry_allowed ? 'disabled' : ''}>
-                    ${data.retry_allowed ? 'Chance déjà accordée ✅' : '♻️ ACCORDER UNE CHANCE'}
+                    ${data.retry_allowed ? 'Chance accordée ✅' : '♻️ Donner une autre chance'}
                 </button>
             </div>`;
     }
 }
 
 async function allowRetry(id) {
-    if(confirm("Sûr ? L'ancien score sera effacé.")) {
-        await db.from('fun_quizzes').update({ retry_allowed: true }).eq('id', id);
-        alert("C'est bon, dis-lui de rafraîchir sa page !");
-        loadDashboardData(id);
-    }
+    await db.from('fun_quizzes').update({ retry_allowed: true, is_completed: false }).eq('id', id);
+    alert("Autorisé ! Dis-lui de rafraîchir !");
 }
 
 function copyToClipboard(id) {
     const el = document.getElementById(id);
     el.select();
-    el.setSelectionRange(0,99999);
-    navigator.clipboard.writeText(el.value);
+    document.execCommand("copy");
     alert("Copié !");
 }
