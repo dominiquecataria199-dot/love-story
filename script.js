@@ -1,6 +1,6 @@
 // --- CONFIGURATION SUPABASE ---
-const SUPABASE_URL = "TON_URL_SUPABASE";
-const SUPABASE_KEY = "TA_CLE_ANON_SUPABASE";
+const SUPABASE_URL = "https://yidbfjramyyvpqvbejdu.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGJmanJhbXl5dnBxdmJlamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNTIzNTcsImV4cCI6MjA4NjYyODM1N30.yM_g4rlfpQy_CmbPlH3QtJLltY70i45Rjy1BbQdB9rY";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // --- DONNÉES GLOBALES ---
