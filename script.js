@@ -1,44 +1,59 @@
 // --- CONFIGURATION SUPABASE ---
-const SUPABASE_URL = 'https://yidbfjramyyvpqvbejdu.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGJmanJhbXl5dnBxdmJlamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNTIzNTcsImV4cCI6MjA4NjYyODM1N30.yM_g4rlfpQy_CmbPlH3QtJLltY70i45Rjy1BbQdB9rY';
+const SUPABASE_URL = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGJmanJhbXl5dnBxdmJlamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNTIzNTcsImV4cCI6MjA4NjYyODM1N30.yM_g4rlfpQy_CmbPlH3QtJLltY70i45Rjy1BbQdB9rY'; // ⚠️ REMPLACE ICI
+const SUPABASE_KEY = 'TA-CLE-ANON'; // ⚠️ REMPLACE ICI
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // --- BANQUES DE DONNÉES FUN ---
 const randomImages = [
-    "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif", // Cœur
-    "https://media.giphy.com/media/l0HlPTbGpWEwjVxrW/giphy.gif", // Bisous
-    "https://media.giphy.com/media/3o7TKoWXm3okO1kgHC/giphy.gif", // Amour
-    "https://media.giphy.com/media/xT0xezQGU5xBeaKp56/giphy.gif", // Chat mignon
-    "https://media.giphy.com/media/LpDmM2wSt6Hm5fKJVa/giphy.gif"  // Danse
+    "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif",
+    "https://media.giphy.com/media/l0HlPTbGpWEwjVxrW/giphy.gif",
+    "https://media.giphy.com/media/3o7TKoWXm3okO1kgHC/giphy.gif",
+    "https://media.giphy.com/media/xT0xezQGU5xBeaKp56/giphy.gif"
 ];
+const goodVibes = ["Génie ! 😍", "Tu me connais trop bien ! 🔥", "Exact ! 💖"];
+const badVibes = ["N'importe quoi 😭", "Tu dors dehors ce soir 🛋️", "Sérieux ?! 😱"];
 
-const winGifs = [
-    "https://media.giphy.com/media/l0amJzVHIAfl7jMDos/giphy.gif", // High five
-    "https://media.giphy.com/media/artj9zzVshs1a/giphy.gif", // Celebration
-    "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" // YES
-];
-
-const loseGifs = [
-    "https://media.giphy.com/media/14aUO0Mf7dWDXW/giphy.gif", // NO GOD NO
-    "https://media.giphy.com/media/BEob5qvFkZ3UI/giphy.gif", // Crying
-    "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif" // Facepalm
-];
-
-const goodVibes = ["T'es un(e) génie ! 😍", "L'amour rend intelligent ! 🧠", "Toi tu me connais ! 🔥", "Exactement ! 💖"];
-const badVibes = ["Tu sors d'où ? 😭", "Aïe... le canapé t'attend 🛋️", "C'est une blague ? 😱", "Tu ne m'écoutes jamais ! 🙉"];
-
-// --- GLOBALS ---
-let quizData = { questions: [] };
+// --- VARIABLES GLOBALES ---
+let quizData = null;
 let currentQIndex = 0;
-let score = 0;
+let localScore = 0;
+let questionCount = 0;
 
-// --- FONCTIONS CRÉATION ---
+// ==========================================
+// 1. PARTIE CRÉATION (index.html)
+// ==========================================
 
-// Fonction pour remplir une image aléatoire
-function setRandomImage(inputId) {
-    const randomImg = randomImages[Math.floor(Math.random() * randomImages.length)];
-    document.getElementById(inputId).value = randomImg;
+function addQuestionField() {
+    questionCount++;
+    const container = document.getElementById('questions-container');
+    
+    const html = `
+    <div class="question-block" id="block-${questionCount}">
+        <div class="q-header">
+            <h3>Question ${questionCount}</h3>
+            ${questionCount > 1 ? `<button class="btn-delete" onclick="this.parentElement.parentElement.remove()">Supprimer 🗑️</button>` : ''}
+        </div>
+        
+        <div class="input-group">
+            <input type="text" class="q-input" placeholder="La question ?" required>
+            <div style="position:relative;">
+                <input type="text" class="img-input" id="img-${questionCount}" placeholder="Lien image/GIF (Optionnel)">
+                <button class="random-btn" onclick="setRandomImage('img-${questionCount}')">🎲</button>
+            </div>
+            
+            <input type="text" class="good-input" placeholder="✅ La BONNE réponse" style="border-left: 5px solid #2ecc71;">
+            <input type="text" class="bad1-input" placeholder="❌ Mauvaise réponse 1" style="border-left: 5px solid #ff4b69;">
+            <input type="text" class="bad2-input" placeholder="❌ Mauvaise réponse 2" style="border-left: 5px solid #ff4b69;">
+        </div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ff4b69;">
+    </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function setRandomImage(id) {
+    document.getElementById(id).value = randomImages[Math.floor(Math.random() * randomImages.length)];
 }
 
 async function createQuiz() {
@@ -46,86 +61,94 @@ async function createQuiz() {
     const partner = document.getElementById('partner').value;
     const reward = document.getElementById('reward').value;
 
-    if(!creator || !partner) return alert("Il manque vos prénoms ! ❤️");
+    // Récupérer toutes les questions dynamiques
+    const qBlocks = document.querySelectorAll('.question-block');
+    let questions = [];
+    let isValid = true;
 
-    const questions = [];
-    for(let i=1; i<=3; i++) {
-        const q = document.getElementById(`q${i}`).value;
-        // Image par défaut si vide
-        const img = document.getElementById(`img${i}`).value || "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif"; 
-        const good = document.getElementById(`good${i}`).value;
-        const bad1 = document.getElementById(`bad${i}_1`).value;
-        const bad2 = document.getElementById(`bad${i}_2`).value;
+    qBlocks.forEach(block => {
+        const q = block.querySelector('.q-input').value;
+        const img = block.querySelector('.img-input').value || randomImages[0];
+        const good = block.querySelector('.good-input').value;
+        const bad1 = block.querySelector('.bad1-input').value;
+        const bad2 = block.querySelector('.bad2-input').value;
 
-        if(!q || !good || !bad1 || !bad2) {
-            return alert(`Oups, tu as oublié de remplir la question ${i} !`);
-        }
+        if (!q || !good || !bad1 || !bad2) isValid = false;
 
-        // Mélange des réponses
         let options = [
             { text: good, isCorrect: true },
             { text: bad1, isCorrect: false },
             { text: bad2, isCorrect: false }
-        ];
-        options = options.sort(() => Math.random() - 0.5);
+        ].sort(() => Math.random() - 0.5);
 
         questions.push({ question: q, image: img, options: options });
-    }
+    });
+
+    if (!creator || !partner || !isValid) return alert("Remplis tout !");
 
     const btn = document.querySelector('.btn-create');
-    btn.innerText = "Création en cours... ⏳";
+    btn.innerText = "Création...";
     btn.disabled = true;
 
-    const { data, error } = await db
-        .from('fun_quizzes')
-        .insert([{ 
-            creator_name: creator, 
-            partner_name: partner, 
-            questions: questions, 
-            final_message: reward 
-        }])
-        .select();
+    const { data, error } = await db.from('fun_quizzes').insert([{ 
+        creator_name: creator, 
+        partner_name: partner, 
+        questions: questions, 
+        final_message: reward 
+    }]).select();
 
-    btn.innerText = "GÉNÉRER LE QUIZ 🚀";
-    btn.disabled = false;
-
-    if(error) {
-        alert("Erreur technique : " + error.message);
+    if (error) {
+        alert("Erreur: " + error.message);
+        btn.disabled = false;
     } else {
-        const link = `${window.location.origin}/play.html?id=${data[0].id}`;
+        const quizId = data[0].id;
+        const playLink = `${window.location.origin}/play.html?id=${quizId}`;
+        const adminLink = `${window.location.origin}/dashboard.html?id=${quizId}`; // Lien secret
+
         document.getElementById('creation-form').classList.add('hidden');
         document.getElementById('result-area').classList.remove('hidden');
-        document.getElementById('share-link').value = link;
+        
+        document.getElementById('play-link-input').value = playLink;
+        document.getElementById('admin-link-input').value = adminLink;
     }
 }
 
-function copyLink() {
-    const copyText = document.getElementById("share-link");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(copyText.value).then(() => {
-        alert("Lien copié ! 💌");
-    });
-}
+// ==========================================
+// 2. PARTIE JEU (play.html)
+// ==========================================
 
-// --- FONCTIONS JEU ---
 async function initGame() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
-
-    if(!id) return; // Mode accueil
+    if (!id) return;
 
     const { data, error } = await db.from('fun_quizzes').select('*').eq('id', id).single();
 
-    if(error || !data) {
-        document.body.innerHTML = "<div class='container'><h1>Oups 😢</h1><p>Quiz introuvable.</p><a href='index.html' class='btn'>Créer le mien</a></div>";
+    if (error || !data) return document.body.innerHTML = "<h1>Quiz introuvable 😢</h1>";
+
+    quizData = data;
+
+    // VÉRIFICATION : Est-ce que le jeu est fini ?
+    if (quizData.is_completed && !quizData.retry_allowed) {
+        // Jeu bloqué
+        document.body.innerHTML = `
+            <div class="container" style="text-align:center;">
+                <h1>⛔ STOP !</h1>
+                <p>Tu as déjà joué. Ton score est enregistré : <b>${quizData.player_score}/${quizData.questions.length}</b></p>
+                <p>Demande à ${quizData.creator_name} de débloquer une nouvelle chance !</p>
+                <img src="https://media.giphy.com/media/3o7TKr3nzbh5WgCFxe/giphy.gif" style="width:100%; border-radius:10px;">
+            </div>
+        `;
         return;
     }
 
-    quizData = data;
+    // Si on a le droit de rejouer, on reset
+    if (quizData.retry_allowed) {
+        // On pourrait reset en base ici, mais on le fera à la fin
+    }
+
     document.getElementById('p-name').innerText = quizData.partner_name;
     document.getElementById('c-name').innerText = quizData.creator_name;
-    
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('game-intro').classList.remove('hidden');
 }
@@ -138,11 +161,9 @@ function startGame() {
 
 function displayQuestion() {
     const q = quizData.questions[currentQIndex];
-    
-    // Affichage Image
     document.getElementById('q-img').src = q.image;
     document.getElementById('q-text').innerText = q.question;
-    document.getElementById('q-counter').innerText = `Question ${currentQIndex + 1} / 3`;
+    document.getElementById('q-counter').innerText = `Question ${currentQIndex + 1} / ${quizData.questions.length}`;
     
     const optsDiv = document.getElementById('q-options');
     optsDiv.innerHTML = "";
@@ -159,20 +180,16 @@ function displayQuestion() {
 function handleAnswer(isCorrect) {
     const feedback = document.getElementById('feedback');
     const feedbackText = document.getElementById('feedback-text');
-    const feedbackGif = document.getElementById('feedback-gif');
-
     feedback.classList.remove('hidden');
 
-    if(isCorrect) {
-        score++;
+    if (isCorrect) {
+        localScore++;
         feedbackText.innerText = goodVibes[Math.floor(Math.random() * goodVibes.length)];
         feedbackText.style.color = "#2ecc71";
-        feedbackGif.src = winGifs[Math.floor(Math.random() * winGifs.length)];
         if(typeof confetti !== 'undefined') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
     } else {
         feedbackText.innerText = badVibes[Math.floor(Math.random() * badVibes.length)];
         feedbackText.style.color = "#ff4b69";
-        feedbackGif.src = loseGifs[Math.floor(Math.random() * loseGifs.length)];
         document.querySelector('.container').classList.add('shake');
         setTimeout(() => document.querySelector('.container').classList.remove('shake'), 500);
     }
@@ -180,30 +197,96 @@ function handleAnswer(isCorrect) {
     setTimeout(() => {
         feedback.classList.add('hidden');
         nextQuestion();
-    }, 2500); // Un peu plus long pour voir le GIF
+    }, 2000);
 }
 
 function nextQuestion() {
     currentQIndex++;
-    if(currentQIndex < quizData.questions.length) {
+    if (currentQIndex < quizData.questions.length) {
         displayQuestion();
     } else {
         endGame();
     }
 }
 
-function endGame() {
+async function endGame() {
     document.getElementById('game-play').classList.add('hidden');
     document.getElementById('game-end').classList.remove('hidden');
-    
+
     const finalMsg = document.getElementById('final-msg');
-    
-    if(score === quizData.questions.length) {
-        finalMsg.innerHTML = `<h2>100% DE RÉUSSITE ! 💍</h2><p>${quizData.final_message}</p>`;
+    const scoreTitle = document.getElementById('score-title');
+
+    scoreTitle.innerText = `Score : ${localScore} / ${quizData.questions.length}`;
+
+    if (localScore === quizData.questions.length) {
+        finalMsg.innerHTML = `<p>${quizData.final_message}</p>`;
         if(typeof confetti !== 'undefined') confetti({ particleCount: 200, spread: 100 });
-    } else if (score === 0) {
-        finalMsg.innerHTML = `<h2>0/3... LA HONTE 😱</h2><p>Gage : Tu dois inviter ${quizData.creator_name} au resto !</p>`;
     } else {
-        finalMsg.innerHTML = `<h2>Score : ${score}/3</h2><p>${quizData.final_message}</p>`;
+        finalMsg.innerHTML = `<p>Aïe... C'est pas ouf. Attends de voir si ${quizData.creator_name} te laisse recommencer.</p>`;
     }
+
+    // SAUVEGARDE EN BASE (Bloque le jeu)
+    await db.from('fun_quizzes')
+        .update({ 
+            player_score: localScore, 
+            is_completed: true, 
+            retry_allowed: false 
+        })
+        .eq('id', quizData.id);
+}
+
+// ==========================================
+// 3. PARTIE DASHBOARD (dashboard.html)
+// ==========================================
+
+async function initDashboard() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (!id) return;
+
+    // Rafraîchir les données toutes les 5 secondes pour voir si l'autre a joué
+    loadDashboardData(id);
+    setInterval(() => loadDashboardData(id), 5000); 
+}
+
+async function loadDashboardData(id) {
+    const { data, error } = await db.from('fun_quizzes').select('*').eq('id', id).single();
+    if(error) return;
+
+    const statusDiv = document.getElementById('status-area');
+    
+    if(!data.is_completed) {
+        statusDiv.innerHTML = `
+            <div class="waiting-box">
+                <h3>⏳ En attente...</h3>
+                <p>${data.partner_name} n'a pas encore fini le quiz.</p>
+            </div>`;
+    } else {
+        statusDiv.innerHTML = `
+            <div class="result-box">
+                <h1>Score : ${data.player_score} / ${data.questions.length}</h1>
+                <p>${data.partner_name} a terminé.</p>
+                <hr>
+                <p>Est-ce que tu lui accordes une autre chance ?</p>
+                <button class="btn" onclick="allowRetry('${id}')" ${data.retry_allowed ? 'disabled' : ''}>
+                    ${data.retry_allowed ? 'Chance déjà accordée ✅' : '♻️ ACCORDER UNE CHANCE'}
+                </button>
+            </div>`;
+    }
+}
+
+async function allowRetry(id) {
+    if(confirm("Sûr ? L'ancien score sera effacé.")) {
+        await db.from('fun_quizzes').update({ retry_allowed: true }).eq('id', id);
+        alert("C'est bon, dis-lui de rafraîchir sa page !");
+        loadDashboardData(id);
+    }
+}
+
+function copyToClipboard(id) {
+    const el = document.getElementById(id);
+    el.select();
+    el.setSelectionRange(0,99999);
+    navigator.clipboard.writeText(el.value);
+    alert("Copié !");
 }
