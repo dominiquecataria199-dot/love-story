@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer ton Love Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container">
+        <h1>💘 Teste ton Couple</h1>
+        
+        <div id="step-1">
+            <p>Qui crée ce quiz ?</p>
+            <input type="text" id="creator" placeholder="Ton prénom (ex: Roméo)">
+            <p>Pour qui ?</p>
+            <input type="text" id="partner" placeholder="Son prénom (ex: Juliette)">
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ff4b69;">
+
+            <!-- QUESTION 1 -->
+            <h3>Question 1</h3>
+            <input type="text" id="q1" placeholder="La question (ex: Mon plat préféré ?)">
+            <input type="text" id="img1" placeholder="Lien image/GIF (Optionnel)">
+            <input type="text" id="good1" placeholder="✅ La BONNE réponse" style="border-color: #4cd137;">
+            <input type="text" id="bad1_1" placeholder="❌ Mauvaise réponse 1">
+            <input type="text" id="bad1_2" placeholder="❌ Mauvaise réponse 2">
+
+            <!-- QUESTION 2 -->
+            <h3 style="margin-top: 20px;">Question 2</h3>
+            <input type="text" id="q2" placeholder="La question (ex: Notre premier baiser ?)">
+            <input type="text" id="img2" placeholder="Lien image/GIF (Optionnel)">
+            <input type="text" id="good2" placeholder="✅ La BONNE réponse" style="border-color: #4cd137;">
+            <input type="text" id="bad2_1" placeholder="❌ Mauvaise réponse 1">
+            <input type="text" id="bad2_2" placeholder="❌ Mauvaise réponse 2">
+
+            <!-- QUESTION 3 -->
+            <h3 style="margin-top: 20px;">Question 3</h3>
+            <input type="text" id="q3" placeholder="La question (ex: Ma pointure ?)">
+            <input type="text" id="img3" placeholder="Lien image/GIF (Optionnel)">
+            <input type="text" id="good3" placeholder="✅ La BONNE réponse" style="border-color: #4cd137;">
+            <input type="text" id="bad3_1" placeholder="❌ Mauvaise réponse 1">
+            <input type="text" id="bad3_2" placeholder="❌ Mauvaise réponse 2">
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ff4b69;">
+            
+            <h3>🎁 Le Message de fin</h3>
+            <textarea id="reward" placeholder="Ex: Je t'aime mon cœur, ce soir c'est resto !"></textarea>
+
+            <button class="btn" onclick="createQuiz()">GÉNÉRER LE QUIZ 🚀</button>
+        </div>
+
+        <div id="step-end" class="hidden">
+            <h2>C'est prêt ! 💌</h2>
+            <p>Envoie ce lien à ta moitié pour voir si elle te connaît vraiment :</p>
+            <input type="text" id="share-link" readonly>
+            <button class="btn" onclick="copyLink()">Copier le lien</button>
+            <br><br>
+            <a href="index.html" style="color: #ff4b69;">En refaire un autre</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

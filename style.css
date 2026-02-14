@@ -1,0 +1,83 @@
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap');
+
+body {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    color: #4a4a4a;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(255, 65, 108, 0.2);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Pacifico', cursive;
+    color: #ff416c;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #ffdde1;
+    border-radius: 10px;
+    outline: none;
+    box-sizing: border-box; /* Important pour le padding */
+}
+
+input:focus {
+    border-color: #ff416c;
+}
+
+button {
+    background: #ff416c;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: #ff4b2b;
+}
+
+.hidden { display: none; }
+
+.heart-beat {
+    animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Ajouts cosmétiques */
+.subtitle { font-size: 0.9rem; color: #666; margin-bottom: 20px; }
+.q-block { margin-bottom: 15px; border-bottom: 1px dashed #ffdde1; padding-bottom: 10px; }
+.reward-box { background: white; padding: 20px; border: 2px dashed #ff416c; border-radius: 10px; margin-top: 20px; color: #4a4a4a; }
+.shake { animation: shake 0.5s; border-color: red; }
+@keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }

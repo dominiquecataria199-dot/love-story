@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prouve ton amour ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="loader">Chargement de la romance... ❤️</div>
+
+        <!-- INTRO -->
+        <div id="game-intro" class="hidden">
+            <h1>Coucou <span id="p-name"></span> !</h1>
+            <p>Ton/Ta chéri(e) <span id="c-name"></span> t'a préparé un test ultime.</p>
+            <p>Si tu échoues... prépare tes valises ! 😂</p>
+            <button class="btn" onclick="startGame()">J'accepte le défi 🔥</button>
+        </div>
+
+        <!-- JEU -->
+        <div id="game-play" class="hidden">
+            <div class="question-card">
+                <img id="q-img" src="" alt="Image question">
+                <h2 id="q-text">La question ici...</h2>
+                <div id="q-options">
+                    <!-- Les boutons seront générés ici par JS -->
+                </div>
+            </div>
+
+            <!-- FEEDBACK OVERLAY (Caché par défaut) -->
+            <div id="feedback" class="feedback-overlay hidden">
+                <span id="feedback-emoji" class="emoji-big">😍</span>
+                <h2 id="feedback-text">T'es un génie !</h2>
+            </div>
+        </div>
+
+        <!-- FIN -->
+        <div id="game-end" class="hidden">
+            <h1>RÉSULTATS</h1>
+            <div id="final-msg" style="background: #fff0f3; padding: 20px; border-radius: 15px; border: 2px dashed #ff4b69;">
+                <!-- Message final ici -->
+            </div>
+            <br>
+            <p>Toi aussi piège ton partenaire :</p>
+            <a href="index.html"><button class="btn" style="background: #4a4a4a;">Créer mon quiz</button></a>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Lancer l'initialisation uniquement sur la page de jeu
+        window.onload = initGame;
+    </script>
+</body>
+</html>
