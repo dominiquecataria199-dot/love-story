@@ -271,3 +271,48 @@ function copyToClipboard(id) {
     document.execCommand("copy");
     alert("Copié !");
 }
+
+
+
+// --- EFFETS VISUELS ET INTERACTIONS ---
+
+// 1. Fonction pour générer les cœurs volants
+function createFloatingHearts() {
+    setInterval(() => {
+        const heart = document.createElement('div');
+        // On varie les plaisirs avec plusieurs emojis
+        heart.innerHTML = ['❤️', '💖', '💘', '💕', '✨'][Math.floor(Math.random() * 5)];
+        heart.className = 'heart-bg';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 3 + 2) + 's'; // Vitesse entre 2 et 5s
+        heart.style.opacity = Math.random();
+        heart.style.fontSize = (Math.random() * 15 + 15) + 'px'; // Taille variée
+        document.body.appendChild(heart);
+        
+        // On supprime l'élément après l'animation pour ne pas alourdir le navigateur
+        setTimeout(() => heart.remove(), 5000);
+    }, 400); // Un nouveau cœur toutes les 400ms
+}
+
+// 2. Fonction pour mettre à jour la barre de progression
+function updateProgressBar() {
+    if (!quizData) return;
+    const percent = (currentQIndex / quizData.questions.length) * 100;
+    const bar = document.getElementById('progress-bar');
+    if (bar) bar.style.width = percent + '%';
+}
+
+// 3. Fonction pour révéler le secret à gratter
+function revealSecret() {
+    const card = document.getElementById('scratch-card');
+    if (card) {
+        card.classList.add('revealed');
+        // Explosion de joie !
+        confetti({ 
+            particleCount: 150, 
+            spread: 70, 
+            origin: { y: 0.6 },
+            colors: ['#ff4b69', '#ff9a9e', '#ffffff']
+        });
+    }
+}
