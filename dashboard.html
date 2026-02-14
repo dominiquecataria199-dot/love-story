@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord 🕵️‍♂️</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🕵️‍♂️ Espace Espion</h1>
+        <p>Voici les résultats de ton interrogatoire.</p>
+
+        <div id="status-area">
+            Chargement...
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="index.html" style="color: #888; text-decoration: none;">Retour accueil</a>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>window.onload = initDashboard;</script>
+</body>
+</html>
