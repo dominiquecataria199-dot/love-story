@@ -42,13 +42,19 @@
 
         <!-- FIN -->
         <div id="game-end" class="hidden">
-            <h1>RÉSULTATS</h1> <h2 id="score-title"></h2>
-            <div id="final-msg" class="reward-box">
-                <!-- Message final -->
+            <h1>Résultat : <span id="score-title"></span></h1>
+            
+            <div id="final-msg"></div> <!-- Les messages de succès/échec s'afficheront ici -->
+        
+            <!-- La carte à gratter (utilisée seulement en cas de succès) -->
+            <div id="scratch-card" class="scratch-container hidden" onclick="revealSecret()">
+                <div class="scratch-overlay">GRATTE ICI ❤️</div>
+                <span id="final-reward"></span> <!-- Le texte secret de Supabase ira ici -->
             </div>
+        
             <br>
-            <p class="text-small">À ton tour de piéger ton partenaire ! 👇</p>
-            <a href="index.html"><button style="background: #4a4a4a;">Créer mon quiz</button></a>
+            <p class="text-small">Toi aussi, crée ton quiz ! 👇</p>
+            <a href="index.html"><button style="background: #4a4a4a;">Créer mon Love Quiz</button></a>
         </div>
 
     </div>
