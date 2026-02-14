@@ -3,13 +3,21 @@
 :root {
     --primary: #ff4b69;
     --primary-hover: #ff2e51;
+    --secondary: #6c5ce7;
+    --success: #2ecc71;
     --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
     --text-color: #4a4a4a;
     --card-bg: rgba(255, 255, 255, 0.95);
 }
 
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
     background: var(--bg-gradient);
+    background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
     display: flex;
@@ -17,32 +25,29 @@ body {
     align-items: center;
     margin: 0;
     color: var(--text-color);
-    padding: 10px; /* Espace sur mobile */
+    padding: 15px; /* Évite que la carte touche les bords de l'écran */
 }
 
 .container {
     background: var(--card-bg);
     padding: 1.5rem;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(255, 65, 108, 0.25);
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(255, 65, 108, 0.2);
     width: 100%;
-    max-width: 480px; /* Taille optimale mobile/desktop */
+    max-width: 480px;
     text-align: center;
     position: relative;
-    box-sizing: border-box;
+    margin: 20px auto;
 }
 
 h1 {
     font-family: 'Pacifico', cursive;
     color: var(--primary);
-    font-size: 2.2rem;
+    font-size: 2rem;
     margin: 0 0 1rem 0;
-    line-height: 1.2;
 }
 
-p { font-size: 0.95rem; margin-bottom: 15px; }
-
-/* Inputs améliorés */
+/* Inputs & Formulaires */
 input, textarea {
     width: 100%;
     padding: 12px 15px;
@@ -50,9 +55,8 @@ input, textarea {
     border: 2px solid #ffdde1;
     border-radius: 12px;
     outline: none;
-    box-sizing: border-box;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 16px !important; /* 16px minimum pour éviter l'auto-zoom iOS */
     transition: 0.3s;
 }
 
@@ -66,128 +70,141 @@ button {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 14px 25px;
+    padding: 14px 20px;
     border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
+    transition: all 0.2s;
     width: 100%;
-    margin-top: 15px;
-    box-shadow: 0 4px 15px rgba(255, 75, 105, 0.3);
+    margin-top: 10px;
 }
 
 button:hover {
     transform: translateY(-2px);
-    background: var(--primary-hover);
+    opacity: 0.9;
 }
 
-button:active { transform: scale(0.98); }
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
 
-/* Zone de jeu */
+.btn-secondary { background: var(--secondary); }
+.btn-create { background: var(--success); font-size: 1.1rem; margin-top: 20px; }
+
+/* Blocs de Questions Dynamiques */
+.question-block {
+    background: #fff;
+    border: 2px solid #ffdde1;
+    padding: 15px;
+    border-radius: 18px;
+    margin: 20px 0;
+    text-align: left;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.q-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--primary);
+}
+
+.btn-delete {
+    background: #ffecf0;
+    color: var(--primary);
+    width: auto;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* Zone de Jeu */
 .question-image {
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 15px;
     margin-bottom: 15px;
-    background-color: #eee;
+    border: 3px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .option-btn {
     background: white;
+    border: 2px solid #f0f0f0;
+    margin-top: 10px;
+    font-weight: 500;
     color: var(--text-color);
-    border: 2px solid #eee;
-    margin-top: 8px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .option-btn:hover {
     border-color: var(--primary);
-    background: #fff0f3;
     color: var(--primary);
+    background: #fff0f3;
 }
 
-/* Feedback Overlay */
+/* Feedback (Gagné/Perdu) */
 .feedback-overlay {
     position: absolute;
     inset: 0;
     background: rgba(255, 255, 255, 0.98);
-    border-radius: 20px;
+    border-radius: 25px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 100;
     padding: 20px;
 }
 
-.feedback-gif {
-    max-width: 100%;
-    height: 180px;
-    border-radius: 10px;
-    margin: 15px 0;
-    object-fit: contain;
-}
-
-/* Helpers */
-.hidden { display: none !important; }
-.text-small { font-size: 0.8rem; color: #888; }
-.input-group { position: relative; margin-bottom: 15px; text-align: left; }
-.input-label { font-size: 0.85rem; font-weight: bold; color: var(--primary); margin-left: 5px;}
-
-/* Bouton random image */
-.random-btn {
-    background: #eee;
-    color: #666;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    width: auto;
-    margin-top: 0;
-    position: absolute;
-    right: 5px;
-    top: 32px;
-    z-index: 5;
-    box-shadow: none;
-}
-
-/* Animation Secousse */
-.shake { animation: shake 0.5s; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
-
-
-
-/* Nouveautés */
-.question-block {
-    background: #fff;
-    border: 2px solid #eee;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    text-align: left;
-}
-.q-header { display: flex; justify-content: space-between; align-items: center; }
-.q-header h3 { margin: 0; font-size: 1.1rem; color: var(--text-color); }
-.btn-delete { background: none; color: #999; border: none; padding: 5px; width: auto; margin: 0; font-size: 0.8rem; box-shadow: none; }
-.btn-secondary { background: #6c5ce7; margin-bottom: 10px; }
-.btn-create { background: #2ecc71; font-size: 1.2rem; }
-.btn-small { padding: 8px 15px; font-size: 0.9rem; width: auto; display: inline-block; margin-top: 5px; }
-
+/* Boîtes de Liens (Fin de création) */
 .link-box {
-    margin: 15px 0;
+    margin: 20px 0;
     padding: 15px;
-    background: #e3f2fd;
+    background: #f0f7ff;
     border: 2px dashed #74b9ff;
-    border-radius: 10px;
+    border-radius: 15px;
     text-align: left;
 }
-.link-box input { background: white; font-size: 0.8rem; }
 
-.waiting-box { padding: 40px; color: #666; animation: pulse 2s infinite; }
-.result-box h1 { font-size: 3rem; color: var(--primary); margin: 20px 0; }
+.link-box p { margin: 0 0 5px 0; font-weight: bold; font-size: 0.85rem; }
+.link-box input { background: white; font-size: 0.75rem; padding: 8px; margin: 5px 0; }
 
-@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+.btn-small {
+    width: auto;
+    padding: 6px 15px;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+/* Dashboard & Stats */
+.waiting-box { padding: 30px; color: #888; font-style: italic; }
+.result-box h1 { font-size: 3.5rem; margin: 10px 0; }
+
+/* Utilitaires */
+.hidden { display: none !important; }
+.shake { animation: shake 0.5s; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+    .container { padding: 1rem; }
+    h1 { font-size: 1.7rem; }
+    .question-image { height: 150px; }
+}
