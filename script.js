@@ -75,7 +75,7 @@ async function createQuiz() {
     if (!creator || !partner || qBlocks.length === 0) return alert("Remplis les prénoms ! ❤️");
 
     const btn = document.querySelector('.btn-create');
-    btn.innerText = "Téléchargement des images... ⏳";
+    btn.innerText = "Création de la suprise... 🚀 ⏳";
     btn.disabled = true;
 
     try {
@@ -113,7 +113,7 @@ async function createQuiz() {
     } catch (err) {
         alert("Erreur: " + err.message);
         btn.disabled = false;
-        btn.innerText = "GÉNÉRER LE QUIZ 🚀";
+        btn.innerText = "CREATION DU QUIZ 🚀";
     }
 }
 
