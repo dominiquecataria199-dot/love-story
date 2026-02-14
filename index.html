@@ -3,82 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Quiz Maker 💘</title>
+    <title>Love Quiz Maker</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
-        <h1>💘 Love Quiz</h1>
-        <p>Crée un test pour savoir si ton partenaire te connaît vraiment !</p>
+        <h1>💘 Love Quiz Maker</h1>
+        <p>Prépare l'interrogatoire...</p>
         
         <div id="creation-form">
             <div class="input-group">
-                <div class="input-label">Ton Prénom</div>
-                <input type="text" id="creator" placeholder="Ex: Roméo">
-            </div>
-            <div class="input-group">
-                <div class="input-label">Son Prénom</div>
-                <input type="text" id="partner" placeholder="Ex: Juliette">
+                <input type="text" id="creator" placeholder="Ton Prénom" style="text-align:center;">
+                <input type="text" id="partner" placeholder="Son Prénom" style="text-align:center;">
             </div>
 
-            <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ff4b69;">
+            <hr style="border: 0; border-top: 2px solid #ff4b69; margin: 20px 0;">
 
-            <!-- QUESTION 1 -->
-            <div class="input-group">
-                <div class="input-label">Question 1</div>
-                <input type="text" id="q1" placeholder="Ex: Ma plus grande peur ?">
-                <input type="text" id="img1" placeholder="Lien d'une image/GIF (Optionnel)">
-                <button class="random-btn" onclick="setRandomImage('img1')">🎲 Image au pif</button>
-                
-                <input type="text" id="good1" placeholder="✅ La BONNE réponse" style="border-left: 5px solid #2ecc71;">
-                <input type="text" id="bad1_1" placeholder="❌ Mauvaise réponse 1" style="border-left: 5px solid #ff4b69;">
-                <input type="text" id="bad1_2" placeholder="❌ Mauvaise réponse 2" style="border-left: 5px solid #ff4b69;">
-            </div>
+            <!-- Conteneur des questions dynamiques -->
+            <div id="questions-container"></div>
 
-            <!-- QUESTION 2 -->
-            <div class="input-group">
-                <div class="input-label">Question 2</div>
-                <input type="text" id="q2" placeholder="Ex: Notre lieu de rencontre ?">
-                <input type="text" id="img2" placeholder="Lien d'une image/GIF (Optionnel)">
-                <button class="random-btn" onclick="setRandomImage('img2')">🎲 Image au pif</button>
+            <button class="btn-secondary" onclick="addQuestionField()">➕ Ajouter une question</button>
 
-                <input type="text" id="good2" placeholder="✅ La BONNE réponse" style="border-left: 5px solid #2ecc71;">
-                <input type="text" id="bad2_1" placeholder="❌ Mauvaise réponse 1" style="border-left: 5px solid #ff4b69;">
-                <input type="text" id="bad2_2" placeholder="❌ Mauvaise réponse 2" style="border-left: 5px solid #ff4b69;">
-            </div>
-
-            <!-- QUESTION 3 -->
-            <div class="input-group">
-                <div class="input-label">Question 3</div>
-                <input type="text" id="q3" placeholder="Ex: Mon plat préféré ?">
-                <input type="text" id="img3" placeholder="Lien d'une image/GIF (Optionnel)">
-                <button class="random-btn" onclick="setRandomImage('img3')">🎲 Image au pif</button>
-
-                <input type="text" id="good3" placeholder="✅ La BONNE réponse" style="border-left: 5px solid #2ecc71;">
-                <input type="text" id="bad3_1" placeholder="❌ Mauvaise réponse 1" style="border-left: 5px solid #ff4b69;">
-                <input type="text" id="bad3_2" placeholder="❌ Mauvaise réponse 2" style="border-left: 5px solid #ff4b69;">
-            </div>
-
-            <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #ff4b69;">
+            <hr style="border: 0; border-top: 2px solid #ff4b69; margin: 20px 0;">
             
-            <div class="input-group">
-                <div class="input-label">🎁 Le Message de victoire</div>
-                <textarea id="reward" rows="3" placeholder="Ex: Je t'invite au resto ce soir !"></textarea>
-            </div>
+            <h3>🎁 Le Message de Victoire</h3>
+            <textarea id="reward" rows="3" placeholder="Si il/elle gagne, tu lui dis quoi ?"></textarea>
 
             <button class="btn-create" onclick="createQuiz()">GÉNÉRER LE QUIZ 🚀</button>
         </div>
 
         <div id="result-area" class="hidden">
             <h2>C'est prêt ! 💌</h2>
-            <p>Copie ce lien et envoie-le :</p>
-            <input type="text" id="share-link" readonly style="background: #eee;">
-            <button onclick="copyLink()">Copier le lien 📋</button>
-            <br><br>
-            <a href="index.html" style="color: #ff4b69; text-decoration: none;">Refaire un autre quiz</a>
+            
+            <div class="link-box">
+                <p>1️⃣ Lien pour <b>LUI</b> (Jeu) :</p>
+                <input type="text" id="play-link-input" readonly>
+                <button class="btn-small" onclick="copyToClipboard('play-link-input')">Copier</button>
+            </div>
+
+            <div class="link-box" style="background:#fff3cd; border-color:#ffcc00;">
+                <p>2️⃣ Lien pour <b>TOI</b> (Admin) :</p>
+                <small>Garde-le pour voir son score !</small>
+                <input type="text" id="admin-link-input" readonly>
+                <button class="btn-small" onclick="copyToClipboard('admin-link-input')">Copier</button>
+            </div>
+
+            <a href="index.html" style="display:block; margin-top:20px; color:#ff4b69;">Recommencer</a>
         </div>
     </div>
     <script src="script.js"></script>
+    <script>
+        // Ajouter une question par défaut au chargement
+        addQuestionField();
+    </script>
 </body>
 </html>
