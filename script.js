@@ -122,6 +122,7 @@ async function createQuiz() {
 // ==========================================
 
 async function initGame() {
+    createFloatingHearts(); 
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     if (!id) return;
@@ -163,6 +164,7 @@ function displayQuestion() {
     const optsDiv = document.getElementById('q-options');
     optsDiv.innerHTML = "";
 
+
     q.options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
@@ -170,6 +172,8 @@ function displayQuestion() {
         btn.onclick = () => handleAnswer(opt.isCorrect);
         optsDiv.appendChild(btn);
     });
+
+    updateProgressBar(); 
 }
 
 function handleAnswer(isCorrect) {
@@ -198,37 +202,74 @@ function handleAnswer(isCorrect) {
     }, 2500);
 }
 
+
+
+
+
+
 async function endGame() {
+    // 1. Bascule d'affichage des zones
     document.getElementById('game-play').classList.add('hidden');
     document.getElementById('game-end').classList.remove('hidden');
     
     const scorePercent = (localScore / quizData.questions.length) * 100;
     const finalMsg = document.getElementById('final-msg');
+    const scratchCard = document.getElementById('scratch-card'); // L'élément container du secret
+    const scoreTitle = document.getElementById('score-title');
 
-    document.getElementById('score-title').innerText = `Résultat : ${localScore} / ${quizData.questions.length}`;
+    // Affichage du score brut
+    scoreTitle.innerText = `${localScore} / ${quizData.questions.length}`;
 
-    // RÈGLE DES 90%
+    // 2. RÈGLE DES 90% + INTERACTION CARTE À GRATTER
     if (scorePercent >= 90) {
+        // CAS SUCCÈS : On affiche le message de félicitations et on prépare le secret
         finalMsg.innerHTML = `
             <h2 style="color:#2ecc71">FÉLICITATIONS ! 🎉</h2>
-            <p>Prouvé à 100% ! Voici mon secret :</p>
-            <div style="background:#fff; padding:15px; border:2px dashed #ff4b69; border-radius:10px; margin-top:15px;">
-                ${quizData.final_message}
-            </div>`;
-        confetti({ particleCount: 200, spread: 100 });
+            <p>Prouvé à 100% ! Tu as gagné le droit de voir mon secret.</p>
+            <p class="text-small">Gratte l'image ci-dessous avec ton doigt ou ta souris :</p>
+        `;
+        
+        // On injecte le secret dans la zone de texte cachée
+        document.getElementById('final-reward').innerText = quizData.final_message;
+        
+        // On s'assure que la carte à gratter est visible
+        scratchCard.classList.remove('hidden');
+        
+        // Grand bouquet de confettis
+        confetti({ 
+            particleCount: 200, 
+            spread: 100, 
+            origin: { y: 0.6 },
+            colors: ['#ff4b69', '#2ecc71', '#ffffff']
+        });
     } else {
+        // CAS ÉCHEC : On affiche le message de déception et on cache le secret
         finalMsg.innerHTML = `
             <h2 style="color:#ff4b69">ÉCHEC... 💔</h2>
             <p>Tu n'as que ${Math.round(scorePercent)}%. Il faut au moins 90% pour voir mon secret.</p>
-            <p>Tu ne me connais pas encore assez bien...</p>`;
+            <div class="reward-box" style="background: #fdfdfd; color: #999;">
+                🔒 Secret verrouillé. Tu ne me connais pas encore assez bien...
+            </div>
+        `;
+        
+        // On cache la carte à gratter pour qu'il ne puisse rien voir
+        scratchCard.classList.add('hidden');
     }
 
-    await db.from('fun_quizzes').update({ 
-        player_score: localScore, 
-        is_completed: true,
-        retry_allowed: false
-    }).eq('id', quizData.id);
+    // 3. SAUVEGARDE ET VERROUILLAGE DANS SUPABASE
+    try {
+        await db.from('fun_quizzes').update({ 
+            player_score: localScore, 
+            is_completed: true,
+            retry_allowed: false // Bloqué par défaut jusqu'à ce que tu autorises dans ton dashboard
+        }).eq('id', quizData.id);
+    } catch (err) {
+        console.error("Erreur lors de la sauvegarde du score:", err);
+    }
 }
+
+
+
 
 // ==========================================
 // 3. PARTIE DASHBOARD (dashboard.html)
