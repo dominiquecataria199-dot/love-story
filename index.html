@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Quiz Maker</title>
+    <title>Love Quiz Maker - Création</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
         <h1>💘 Love Quiz Maker</h1>
-        <p>Prépare l'interrogatoire...</p>
+        <p>Crée ton test personnalisé. <br><b>Condition :</b> Ton partenaire doit avoir 90% de bonnes réponses pour voir ton secret !</p>
         
         <div id="creation-form">
             <div class="input-group">
@@ -20,42 +20,38 @@
 
             <hr style="border: 0; border-top: 2px solid #ff4b69; margin: 20px 0;">
 
-            <!-- Conteneur des questions dynamiques -->
-            <div id="questions-container"></div>
+            <div id="questions-container">
+                <!-- Les questions s'ajouteront ici -->
+            </div>
 
             <button type="button" class="btn-secondary" onclick="addQuestionField()">➕ Ajouter une question</button>
 
             <hr style="border: 0; border-top: 2px solid #ff4b69; margin: 20px 0;">
             
-            <h3>🎁 Le Message de Victoire</h3>
-            <textarea id="reward" rows="3" placeholder="Si il/elle gagne, tu lui dis quoi ?"></textarea>
+            <h3>🎁 Ton Secret / Récompense</h3>
+            <p class="text-small">(Visible seulement si + de 90% de réussite)</p>
+            <textarea id="reward" rows="3" placeholder="Ex: Je t'offre un voyage / Mon secret est que..."></textarea>
 
             <button class="btn-create" onclick="createQuiz()">GÉNÉRER LE QUIZ 🚀</button>
         </div>
 
         <div id="result-area" class="hidden">
             <h2>C'est prêt ! 💌</h2>
-            
             <div class="link-box">
-                <p>1️⃣ Lien pour <b>LUI</b> (Jeu) :</p>
+                <p>1️⃣ Lien pour <b>LUI / ELLE</b> (Jeu) :</p>
                 <input type="text" id="play-link-input" readonly>
                 <button class="btn-small" onclick="copyToClipboard('play-link-input')">Copier</button>
             </div>
-
             <div class="link-box" style="background:#fff3cd; border-color:#ffcc00;">
-                <p>2️⃣ Lien pour <b>TOI</b> (Admin) :</p>
-                <small>Garde-le pour voir son score !</small>
+                <p>2️⃣ Lien pour <b>TOI</b> (Dashboard) :</p>
+                <small>Garde-le pour voir s'il/elle a réussi !</small>
                 <input type="text" id="admin-link-input" readonly>
                 <button class="btn-small" onclick="copyToClipboard('admin-link-input')">Copier</button>
             </div>
-
-            <a href="index.html" style="display:block; margin-top:20px; color:#ff4b69;">Recommencer</a>
+            <a href="index.html" style="display:block; margin-top:20px; color:#ff4b69;">Créer un autre quiz</a>
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-        // Ajouter une question par défaut au chargement
-        addQuestionField();
-    </script>
+    <script>window.onload = () => { if(typeof addQuestionField === 'function') addQuestionField(); }</script>
 </body>
 </html>
