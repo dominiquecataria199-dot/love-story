@@ -208,3 +208,57 @@ button:disabled {
     h1 { font-size: 1.7rem; }
     .question-image { height: 150px; }
 }
+
+
+
+
+
+/* Responsive container */
+.container {
+    width: 95%;
+    max-width: 450px;
+    margin: 10px auto;
+    padding: 1.2rem;
+}
+
+/* Style des questions */
+.question-block {
+    background: #fff;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+.file-input-group {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.file-input-group label {
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--primary);
+}
+
+.btn-del {
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.reward-box {
+    background: #fff0f3;
+    padding: 20px;
+    border: 2px dashed var(--primary);
+    border-radius: 10px;
+    margin-top: 20px;
+    font-weight: bold;
+}
