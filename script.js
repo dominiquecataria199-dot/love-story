@@ -1,45 +1,67 @@
-
 // --- CONFIGURATION SUPABASE ---
-// ⚠️ REMETS TES CLÉS ICI (Celles que tu avais avant)
 const SUPABASE_URL = 'https://yidbfjramyyvpqvbejdu.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpZGJmanJhbXl5dnBxdmJlamR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNTIzNTcsImV4cCI6MjA4NjYyODM1N30.yM_g4rlfpQy_CmbPlH3QtJLltY70i45Rjy1BbQdB9rY';
 
-// CORRECTION ICI : On nomme la variable 'db' pour ne pas créer de conflit
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// --- DONNÉES GLOBALES ---
+// --- BANQUES DE DONNÉES FUN ---
+const randomImages = [
+    "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif", // Cœur
+    "https://media.giphy.com/media/l0HlPTbGpWEwjVxrW/giphy.gif", // Bisous
+    "https://media.giphy.com/media/3o7TKoWXm3okO1kgHC/giphy.gif", // Amour
+    "https://media.giphy.com/media/xT0xezQGU5xBeaKp56/giphy.gif", // Chat mignon
+    "https://media.giphy.com/media/LpDmM2wSt6Hm5fKJVa/giphy.gif"  // Danse
+];
+
+const winGifs = [
+    "https://media.giphy.com/media/l0amJzVHIAfl7jMDos/giphy.gif", // High five
+    "https://media.giphy.com/media/artj9zzVshs1a/giphy.gif", // Celebration
+    "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif" // YES
+];
+
+const loseGifs = [
+    "https://media.giphy.com/media/14aUO0Mf7dWDXW/giphy.gif", // NO GOD NO
+    "https://media.giphy.com/media/BEob5qvFkZ3UI/giphy.gif", // Crying
+    "https://media.giphy.com/media/l2JhtKtDWYNKdRpoA/giphy.gif" // Facepalm
+];
+
+const goodVibes = ["T'es un(e) génie ! 😍", "L'amour rend intelligent ! 🧠", "Toi tu me connais ! 🔥", "Exactement ! 💖"];
+const badVibes = ["Tu sors d'où ? 😭", "Aïe... le canapé t'attend 🛋️", "C'est une blague ? 😱", "Tu ne m'écoutes jamais ! 🙉"];
+
+// --- GLOBALS ---
 let quizData = { questions: [] };
 let currentQIndex = 0;
 let score = 0;
 
-// Messages FUN (Aléatoires)
-const goodVibes = ["T'es un(e) génie ! 😍", "L'amour rend intelligent ! 🧠", "Toi tu me connais ! 🔥", "Exactement ! 💖"];
-const badVibes = ["Tu sors d'où ? 😭", "Tu dors sur le balcon ce soir 🛋️", "Rupture imminente... 💔", "Sérieux ?! 😱", "Tu ne m'écoutes jamais ! 🙉"];
-
 // --- FONCTIONS CRÉATION ---
+
+// Fonction pour remplir une image aléatoire
+function setRandomImage(inputId) {
+    const randomImg = randomImages[Math.floor(Math.random() * randomImages.length)];
+    document.getElementById(inputId).value = randomImg;
+}
+
 async function createQuiz() {
-    // On récupère les valeurs
     const creator = document.getElementById('creator').value;
     const partner = document.getElementById('partner').value;
     const reward = document.getElementById('reward').value;
 
-    if(!creator || !partner) return alert("Hé ! Il faut mettre vos prénoms ! ❤️");
+    if(!creator || !partner) return alert("Il manque vos prénoms ! ❤️");
 
-    // Récupération des 3 questions
     const questions = [];
     for(let i=1; i<=3; i++) {
         const q = document.getElementById(`q${i}`).value;
+        // Image par défaut si vide
         const img = document.getElementById(`img${i}`).value || "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif"; 
         const good = document.getElementById(`good${i}`).value;
         const bad1 = document.getElementById(`bad${i}_1`).value;
         const bad2 = document.getElementById(`bad${i}_2`).value;
 
-        // Vérification que les champs question/réponse sont remplis
         if(!q || !good || !bad1 || !bad2) {
-            return alert(`Il manque des infos à la question ${i} !`);
+            return alert(`Oups, tu as oublié de remplir la question ${i} !`);
         }
 
-        // On mélange les options
+        // Mélange des réponses
         let options = [
             { text: good, isCorrect: true },
             { text: bad1, isCorrect: false },
@@ -50,13 +72,10 @@ async function createQuiz() {
         questions.push({ question: q, image: img, options: options });
     }
 
-    // Changement du bouton pour montrer que ça charge
-    const btn = document.querySelector('.btn');
-    const originalText = btn.innerText;
+    const btn = document.querySelector('.btn-create');
     btn.innerText = "Création en cours... ⏳";
     btn.disabled = true;
 
-    // Envoi à Supabase (On utilise 'db' ici maintenant)
     const { data, error } = await db
         .from('fun_quizzes')
         .insert([{ 
@@ -67,18 +86,15 @@ async function createQuiz() {
         }])
         .select();
 
-    // On remet le bouton normal
-    btn.innerText = originalText;
+    btn.innerText = "GÉNÉRER LE QUIZ 🚀";
     btn.disabled = false;
 
     if(error) {
-        console.error(error);
-        alert("Oups, erreur technique : " + error.message);
+        alert("Erreur technique : " + error.message);
     } else {
-        // Succès !
         const link = `${window.location.origin}/play.html?id=${data[0].id}`;
-        document.getElementById('step-1').classList.add('hidden');
-        document.getElementById('step-end').classList.remove('hidden');
+        document.getElementById('creation-form').classList.add('hidden');
+        document.getElementById('result-area').classList.remove('hidden');
         document.getElementById('share-link').value = link;
     }
 }
@@ -86,15 +102,10 @@ async function createQuiz() {
 function copyLink() {
     const copyText = document.getElementById("share-link");
     copyText.select();
-    copyText.setSelectionRange(0, 99999); // Pour mobile
-    
-    try {
-        navigator.clipboard.writeText(copyText.value).then(() => {
-            alert("Lien copié ! Envoie-le vite 💌");
-        });
-    } catch (err) {
-        alert("Copie manuelle : " + copyText.value);
-    }
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value).then(() => {
+        alert("Lien copié ! 💌");
+    });
 }
 
 // --- FONCTIONS JEU ---
@@ -102,13 +113,12 @@ async function initGame() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
 
-    if(!id) return; // On n'est pas sur la page de jeu
+    if(!id) return; // Mode accueil
 
-    // On utilise 'db' ici aussi
     const { data, error } = await db.from('fun_quizzes').select('*').eq('id', id).single();
 
     if(error || !data) {
-        document.body.innerHTML = "<div class='app-container'><h1>Quiz introuvable 😢</h1><p>Le lien est peut-être cassé.</p></div>";
+        document.body.innerHTML = "<div class='container'><h1>Oups 😢</h1><p>Quiz introuvable.</p><a href='index.html' class='btn'>Créer le mien</a></div>";
         return;
     }
 
@@ -129,16 +139,10 @@ function startGame() {
 function displayQuestion() {
     const q = quizData.questions[currentQIndex];
     
-    // Gestion de l'image
-    const imgEl = document.getElementById('q-img');
-    if(q.image) {
-        imgEl.src = q.image;
-        imgEl.classList.remove('hidden');
-    } else {
-        imgEl.classList.add('hidden');
-    }
-    
+    // Affichage Image
+    document.getElementById('q-img').src = q.image;
     document.getElementById('q-text').innerText = q.question;
+    document.getElementById('q-counter').innerText = `Question ${currentQIndex + 1} / 3`;
     
     const optsDiv = document.getElementById('q-options');
     optsDiv.innerHTML = "";
@@ -155,29 +159,28 @@ function displayQuestion() {
 function handleAnswer(isCorrect) {
     const feedback = document.getElementById('feedback');
     const feedbackText = document.getElementById('feedback-text');
-    const feedbackEmoji = document.getElementById('feedback-emoji');
+    const feedbackGif = document.getElementById('feedback-gif');
 
     feedback.classList.remove('hidden');
 
     if(isCorrect) {
         score++;
-        feedbackEmoji.innerText = "😍";
         feedbackText.innerText = goodVibes[Math.floor(Math.random() * goodVibes.length)];
-        // Confetti seulement si la librairie est chargée
-        if(typeof confetti !== 'undefined') {
-            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-        }
+        feedbackText.style.color = "#2ecc71";
+        feedbackGif.src = winGifs[Math.floor(Math.random() * winGifs.length)];
+        if(typeof confetti !== 'undefined') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
     } else {
-        feedbackEmoji.innerText = "😭";
         feedbackText.innerText = badVibes[Math.floor(Math.random() * badVibes.length)];
-        document.querySelector('.app-container').classList.add('shake');
-        setTimeout(() => document.querySelector('.app-container').classList.remove('shake'), 500);
+        feedbackText.style.color = "#ff4b69";
+        feedbackGif.src = loseGifs[Math.floor(Math.random() * loseGifs.length)];
+        document.querySelector('.container').classList.add('shake');
+        setTimeout(() => document.querySelector('.container').classList.remove('shake'), 500);
     }
 
     setTimeout(() => {
         feedback.classList.add('hidden');
         nextQuestion();
-    }, 2000);
+    }, 2500); // Un peu plus long pour voir le GIF
 }
 
 function nextQuestion() {
@@ -196,13 +199,11 @@ function endGame() {
     const finalMsg = document.getElementById('final-msg');
     
     if(score === quizData.questions.length) {
-        finalMsg.innerHTML = `<h2>100% de réussite ! 💍</h2><p>${quizData.final_message}</p>`;
-        if(typeof confetti !== 'undefined') {
-            confetti({ particleCount: 200, spread: 100 });
-        }
+        finalMsg.innerHTML = `<h2>100% DE RÉUSSITE ! 💍</h2><p>${quizData.final_message}</p>`;
+        if(typeof confetti !== 'undefined') confetti({ particleCount: 200, spread: 100 });
     } else if (score === 0) {
-        finalMsg.innerHTML = `<h2>0/${quizData.questions.length}... C'est la cata 😱</h2><p>Ton gage : Invite ${quizData.creator_name} au resto pour te faire pardonner !</p>`;
+        finalMsg.innerHTML = `<h2>0/3... LA HONTE 😱</h2><p>Gage : Tu dois inviter ${quizData.creator_name} au resto !</p>`;
     } else {
-        finalMsg.innerHTML = `<h2>${score}/${quizData.questions.length} - Pas mal !</h2><p>${quizData.final_message}</p>`;
+        finalMsg.innerHTML = `<h2>Score : ${score}/3</h2><p>${quizData.final_message}</p>`;
     }
 }
