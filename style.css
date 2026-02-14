@@ -5,6 +5,7 @@
     --primary-hover: #ff2e51;
     --secondary: #6c5ce7;
     --success: #2ecc71;
+    --danger: #e74c3c;
     --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
     --text-color: #4a4a4a;
     --card-bg: rgba(255, 255, 255, 0.95);
@@ -25,7 +26,7 @@ body {
     align-items: center;
     margin: 0;
     color: var(--text-color);
-    padding: 15px; /* Évite que la carte touche les bords de l'écran */
+    padding: 10px;
 }
 
 .container {
@@ -37,7 +38,7 @@ body {
     max-width: 480px;
     text-align: center;
     position: relative;
-    margin: 20px auto;
+    margin: 10px auto;
 }
 
 h1 {
@@ -56,7 +57,7 @@ input, textarea {
     border-radius: 12px;
     outline: none;
     font-family: inherit;
-    font-size: 16px !important; /* 16px minimum pour éviter l'auto-zoom iOS */
+    font-size: 16px !important; /* Pour mobile iOS */
     transition: 0.3s;
 }
 
@@ -97,7 +98,7 @@ button:disabled {
 /* Blocs de Questions Dynamiques */
 .question-block {
     background: #fff;
-    border: 2px solid #ffdde1;
+    border: 1px solid #eee;
     padding: 15px;
     border-radius: 18px;
     margin: 20px 0;
@@ -118,20 +119,41 @@ button:disabled {
     margin-bottom: 10px;
 }
 
-.q-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: var(--primary);
-}
-
-.btn-delete {
+.btn-del {
     background: #ffecf0;
     color: var(--primary);
-    width: auto;
-    padding: 5px 12px;
-    font-size: 0.75rem;
-    margin: 0;
-    box-shadow: none;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Upload Photo */
+.file-input-group {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 12px;
+    margin: 10px 0;
+    border: 1px dashed #ccc;
+}
+
+.file-input-group label {
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.file-input-group input[type="file"] {
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 0.7rem;
 }
 
 /* Zone de Jeu */
@@ -159,7 +181,7 @@ button:disabled {
     background: #fff0f3;
 }
 
-/* Feedback (Gagné/Perdu) */
+/* Feedback & Fin de jeu */
 .feedback-overlay {
     position: absolute;
     inset: 0;
@@ -173,7 +195,17 @@ button:disabled {
     padding: 20px;
 }
 
-/* Boîtes de Liens (Fin de création) */
+.reward-box {
+    background: #fff0f3;
+    padding: 20px;
+    border: 2px dashed var(--primary);
+    border-radius: 15px;
+    margin-top: 20px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* Boîtes de Liens */
 .link-box {
     margin: 20px 0;
     padding: 15px;
@@ -186,79 +218,18 @@ button:disabled {
 .link-box p { margin: 0 0 5px 0; font-weight: bold; font-size: 0.85rem; }
 .link-box input { background: white; font-size: 0.75rem; padding: 8px; margin: 5px 0; }
 
-.btn-small {
-    width: auto;
-    padding: 6px 15px;
-    font-size: 0.8rem;
-    display: inline-block;
-}
-
-/* Dashboard & Stats */
+/* Dashboard Admin */
 .waiting-box { padding: 30px; color: #888; font-style: italic; }
-.result-box h1 { font-size: 3.5rem; margin: 10px 0; }
+.result-box h1 { font-size: 3rem; color: var(--primary); margin: 10px 0; }
 
 /* Utilitaires */
 .hidden { display: none !important; }
 .shake { animation: shake 0.5s; }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
 
-/* Responsive adjustments */
-@media (max-width: 400px) {
-    .container { padding: 1rem; }
-    h1 { font-size: 1.7rem; }
-    .question-image { height: 150px; }
-}
-
-
-
-
-
-/* Responsive container */
-.container {
-    width: 95%;
-    max-width: 450px;
-    margin: 10px auto;
-    padding: 1.2rem;
-}
-
-/* Style des questions */
-.question-block {
-    background: #fff;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #eee;
-    text-align: left;
-}
-
-.file-input-group {
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 8px;
-    margin: 10px 0;
-}
-
-.file-input-group label {
-    font-size: 0.8rem;
-    display: block;
-    margin-bottom: 5px;
-    color: var(--primary);
-}
-
-.btn-del {
-    background: #eee;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-}
-
-.reward-box {
-    background: #fff0f3;
-    padding: 20px;
-    border: 2px dashed var(--primary);
-    border-radius: 10px;
-    margin-top: 20px;
-    font-weight: bold;
+/* Mobile Optimization */
+@media (max-width: 480px) {
+    .container { padding: 1.2rem; border-radius: 20px; }
+    h1 { font-size: 1.8rem; }
+    .question-image { height: 160px; }
 }
