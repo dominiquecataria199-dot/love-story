@@ -157,3 +157,37 @@ button:active { transform: scale(0.98); }
 /* Animation Secousse */
 .shake { animation: shake 0.5s; }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+
+
+
+/* Nouveautés */
+.question-block {
+    background: #fff;
+    border: 2px solid #eee;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+.q-header { display: flex; justify-content: space-between; align-items: center; }
+.q-header h3 { margin: 0; font-size: 1.1rem; color: var(--text-color); }
+.btn-delete { background: none; color: #999; border: none; padding: 5px; width: auto; margin: 0; font-size: 0.8rem; box-shadow: none; }
+.btn-secondary { background: #6c5ce7; margin-bottom: 10px; }
+.btn-create { background: #2ecc71; font-size: 1.2rem; }
+.btn-small { padding: 8px 15px; font-size: 0.9rem; width: auto; display: inline-block; margin-top: 5px; }
+
+.link-box {
+    margin: 15px 0;
+    padding: 15px;
+    background: #e3f2fd;
+    border: 2px dashed #74b9ff;
+    border-radius: 10px;
+    text-align: left;
+}
+.link-box input { background: white; font-size: 0.8rem; }
+
+.waiting-box { padding: 40px; color: #666; animation: pulse 2s infinite; }
+.result-box h1 { font-size: 3rem; color: var(--primary); margin: 20px 0; }
+
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
